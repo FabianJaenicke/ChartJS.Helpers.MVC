@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -75,9 +76,16 @@ namespace ChartJS.Helpers.MVC
                     }
                     value = value.TrimEnd(',') + "]";
                 }
-                else if (property.PropertyType == typeof(int?) || property.PropertyType == typeof(double?))
+                else if (property.PropertyType == typeof(int?))
                 {
                     value = property.GetValue(data).ToString();
+                }
+                else if (property.PropertyType == typeof(double?))
+                {
+                    var doubleValue = property.GetValue(data) as double?;
+                    value = doubleValue == null
+                        ? property.GetValue(data).ToString()
+                        : ((double) doubleValue).ToString("F1", new CultureInfo("en-US", false));
                 }
                 else if (property.PropertyType == typeof(bool?))
                 {
